@@ -1,6 +1,7 @@
 <?php
     /**
-     * @desc: VAST schema implementation
+     * @desc: VAST fabric class for protocols versions 2.0 and 3.0
+     * @todo Add support for version 2.0
      * @author Alexander Chaika
      * @author alexander.chaika@itechart-group.com
      * @link http://www.itechart.com
@@ -41,7 +42,7 @@
             if (in_array($version, self::_available_vesions)) {
                 $class_name = 'VAST' . $version;
                 if (file_exists('Versions' . DIRECTORY_SEPARATOR . $class_name . '.php')) {
-                    include_once 'Versions' . DIRECTORY_SEPARATOR . $class_name.'.php';
+                    include_once 'Versions' . DIRECTORY_SEPARATOR . $class_name . '.php';
                     return new $class_name;
                 } else {
                     return false;
