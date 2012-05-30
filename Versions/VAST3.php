@@ -13,8 +13,9 @@
 
         /**
          * @desc Create InLine XML
+         * @return object $this
          */
-        public function getInline() {
+        public function inline() {
             // Create XML root paths
             $this->_xml = new SimpleXMLElement(null);
             $inline = $this->_xml->addChild('VAST')
@@ -27,7 +28,7 @@
             $inline->addChild('AdTitle', $this->_title);
 
             // Set impression
-            $inline->addChild('Impression', $this->_source);
+            $inline->addChild('Impression', '<![CDATA[' . $this->_source . ']]>');
 
             // Add creatives
             $creatives = $inline->addChild('Creatives');
@@ -42,5 +43,23 @@
 
             $media_file->addChild('delivery', $this->_delivery);
             $media_file->addChild('type', $this->_mime_type);
+
+            return $this;
+        }
+
+        /**
+         * @desc Create Wrapper XML
+         * @return object $this
+         */
+        public function wrap() {
+            // Create XML root paths
+            $this->_xml = new SimpleXMLElement(null);
+            $this->_xml->addChild('VAST')
+                ->addAttribute('version', '3.0')
+                ->addChild('Ad')
+                ->addChild('Wrapper')
+                ->addChild('VASTAdTagURI', '<![CDATA[' . $this->_source . ']]>');
+
+            return $this;
         }
     }
