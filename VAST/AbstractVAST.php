@@ -1,12 +1,12 @@
 <?php
     /**
      * @desc Abstract VAST class with default set get methods
-     * @todo Add multiple Ad support
+     * @todo Add support for multiple MediaFiles
      * @author Alexander Chaika a.k.a. Manti
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 28.05.12 16:50
-     * @version 1.0
+     * @version 1.0RC1
      * @abstract
      */
 
@@ -17,6 +17,12 @@
          * @var SimpleXMLElement
          */
         protected $_xml;
+
+        /**
+         * @desc Ad Impressions
+         * @var mixed
+         */
+        protected $_impressions;
 
         /**
          * @desc Video Ad width
@@ -41,12 +47,6 @@
          * @var int
          */
         protected $_bitrate;
-
-        /**
-         * @desc Video Ad source link
-         * @var string
-         */
-        protected $_source;
 
         /**
          * @desc Video Ad System
@@ -76,7 +76,13 @@
          * @desc Ad Error Tracking pixel
          * @var string
          */
-        protected $_error_handler;
+        protected $_error_link;
+
+        /**
+         * @desc Video Ad Wrapper source link
+         * @var string
+         */
+        protected $_wrapper_link;
 
         /**
          * @desc Return XML object
@@ -101,6 +107,22 @@
          */
         public function toFile($fname) {
             return file_put_contents($fname, $this->toString());
+        }
+
+        /**
+         * @desc Get Ad Impressions
+         * @return int
+         */
+        public function getImpressions() {
+            return $this->_impressions;
+        }
+
+        /**
+         * @desc Set Ad Impressions
+         * @param mixed $impressions
+         */
+        public function setImpressions($impressions) {
+            $this->_impressions = $impressions;
         }
 
         /**
@@ -168,19 +190,19 @@
         }
 
         /**
-         * @desc Get Ad source link
+         * @desc Get Ad Wrapper source link
          * @return string
          */
-        public function getSource() {
-            return $this->_source;
+        public function getWrapperLink() {
+            return $this->_wrapper_link;
         }
 
         /**
-         * @desc Set Ad source
-         * @param string $source
+         * @desc Set Ad Wrapper link
+         * @param string $wrapper_link
          */
-        public function setSource($source) {
-            $this->_source = $source;
+        public function setWrapperLink($wrapper_link) {
+            $this->_wrapper_link = $wrapper_link;
         }
 
         /**
@@ -248,18 +270,18 @@
         }
 
         /**
-         * @desc Get Ad Error Tracking pixel
+         * @desc Get Ad Error Link
          * @return string
          */
-        public function getErrorHandler() {
-            return $this->_error_handler;
+        public function getErrorLink() {
+            return $this->_error_link;
         }
 
         /**
-         * @desc Set Ad MIME type
-         * @param string $mime_type
+         * @desc Set Ad Error Link
+         * @param string $error_link
          */
-        public function setErrorHandler($error_handler) {
-            $this->_error_handler = $error_handler;
+        public function setErrorLink($error_link) {
+            $this->_error_link = $error_link;
         }
     }

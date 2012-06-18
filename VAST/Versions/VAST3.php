@@ -1,12 +1,12 @@
 <?php
     /**
      * @desc: VAST v3.0 schema implementation
-     * @todo Add multiple Ad support
+     * @todo Add support for multiple MediaFiles
      * @author Alexander Chaika a.k.a. Manti
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 28.05.12 12:32
-     * @version 1.0
+     * @version 1.0RC1
      */
 
     class VAST3 extends AbstractVAST {
@@ -16,9 +16,8 @@
          * @return object $this
          */
         public function inline() {
-            // Create XML root paths
-            $this->_xml = new SimpleXMLElement('<VAST></VAST>');
-            $this->_xml->addAttribute('version', '3.0');
+            // Create XML root
+            $this->_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><VAST version="3.0"></VAST>');
 
             // Create inline tag
             $inline = $this->_xml->addChild('Ad')
@@ -32,7 +31,14 @@
             $inline->addChild('AdTitle', $this->_title);
 
             // Set impression
-            $inline->addChild('Impression', '<![CDATA[' . $this->_source . ']]>');
+            if (is_array($this->_impressions)) {
+                foreach ($this->_impressions as $id => $impression) {
+                    $item = $inline->addChild('Impression', '<![CDATA[' . $impression . ']]>');
+                    $item->addAttribute('id', $id);
+                }
+            } else {
+                $inline->addChild('Impression', '<![CDATA[' . $this->_impressions . ']]>');
+            }
 
             // Add creatives
             $creatives = $inline->addChild('Creatives');
@@ -50,7 +56,7 @@
 
             // Add Error Handler
             if (!empty($this->_error_handler)) {
-                $inline->addChild('Error', $this->_error_handler);
+                $inline->addChild('Error', $this->_error_link);
             }
 
             return $this;
@@ -67,7 +73,7 @@
 
             $this->_xml->addChild('Ad')
                 ->addChild('Wrapper')
-                ->addChild('VASTAdTagURI', '<![CDATA[' . $this->_source . ']]>');
+                ->addChild('VASTAdTagURI', '<![CDATA[' . $this->_wrapper_link . ']]>');
 
             return $this;
         }
@@ -85,8 +91,8 @@
                 throw new VASTException('Missing required field AdTitle');
             }
 
-            if (empty($this->_source)) {
-                throw new VASTException('Missing required field Impression');
+            if (empty($this->_impressions)) {
+                throw new VASTException('Missing required field Impressions');
             }
 
             if (empty($this->_width)) {
