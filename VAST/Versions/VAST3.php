@@ -71,4 +71,38 @@
 
             return $this;
         }
+
+        /**
+         * @desc Check required fields
+         * @throws VASTException
+         */
+        private function checkRequired() {
+            if (empty($this->_system)) {
+                throw new VASTException('Missing required field AdSystem');
+            }
+
+            if (empty($this->_title)) {
+                throw new VASTException('Missing required field AdTitle');
+            }
+
+            if (empty($this->_source)) {
+                throw new VASTException('Missing required field Impression');
+            }
+
+            if (empty($this->_width)) {
+                throw new VASTException('Missing required field Width');
+            }
+
+            if (empty($this->_height)) {
+                throw new VASTException('Missing required field Height');
+            }
+
+            if (empty($this->_delivery)) {
+                throw new VASTException('Missing required field Delivery');
+            }
+
+            if (empty($this->_mime_type)) {
+                throw new VASTException('Missing required field MIME Type');
+            }
+        }
     }
