@@ -6,7 +6,7 @@
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 28.05.12 12:02
-     * @version 1.0
+     * @version 1.0a
      */
 
     require_once 'Exception.php';
@@ -24,7 +24,7 @@
          * @desc Supported versions
          * @var array
          */
-        private static $_available_versions = array(2, 3);
+        private static $_available_versions = array(3);
 
         /**
          * @desc Get default VAST object (currently version 3)
@@ -41,7 +41,7 @@
          * @throws VASTException
          */
         public static function getByVersion($version) {
-            if (in_array($version, self::_available_vesions)) {
+            if (in_array($version, self::$_available_versions)) {
                 $class_name = 'VAST' . $version;
                 if (file_exists('Versions' . DIRECTORY_SEPARATOR . $class_name . '.php')) {
                     include_once 'Versions' . DIRECTORY_SEPARATOR . $class_name . '.php';

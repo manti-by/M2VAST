@@ -6,7 +6,7 @@
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 18.06.12 12:41
-     * @version 1.0
+     * @version 1.0a
      */
 
     class VASTException extends Exception {

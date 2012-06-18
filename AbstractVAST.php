@@ -6,7 +6,7 @@
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 28.05.12 16:50
-     * @version 1.0
+     * @version 1.0a
      * @abstract
      */
 
