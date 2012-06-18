@@ -11,7 +11,7 @@
     try {
         // Get VAST instance
         // Default version 3.0
-        require_once 'VAST.php';
+        require_once 'VAST/VAST.php';
         $vast = VAST::getInstance();
 
         // Set params
