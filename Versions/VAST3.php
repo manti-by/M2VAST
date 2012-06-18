@@ -6,7 +6,7 @@
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 28.05.12 12:32
-     * @version 1.0
+     * @version 1.0a
      */
 
     class VAST3 extends AbstractVAST {
@@ -17,10 +17,11 @@
          */
         public function inline() {
             // Create XML root paths
-            $this->_xml = new SimpleXMLElement(null);
-            $inline = $this->_xml->addChild('VAST')
-                ->addAttribute('version', '3.0')
-                ->addChild('Ad')
+            $this->_xml = new SimpleXMLElement('<VAST></VAST>');
+            $this->_xml->addAttribute('version', '3.0');
+
+            // Create inline tag
+            $inline = $this->_xml->addChild('Ad')
                 ->addChild('InLine');
 
             // Add default params
@@ -53,10 +54,10 @@
          */
         public function wrap() {
             // Create XML root paths
-            $this->_xml = new SimpleXMLElement(null);
-            $this->_xml->addChild('VAST')
-                ->addAttribute('version', '3.0')
-                ->addChild('Ad')
+            $this->_xml = new SimpleXMLElement('<VAST></VAST>');
+            $this->_xml->addAttribute('version', '3.0');
+
+            $this->_xml->addChild('Ad')
                 ->addChild('Wrapper')
                 ->addChild('VASTAdTagURI', '<![CDATA[' . $this->_source . ']]>');
 
