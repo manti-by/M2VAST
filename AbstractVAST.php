@@ -2,9 +2,9 @@
     /**
      * @desc Abstract VAST class with default set get methods
      * @todo Add multiple Ad support
-     * @author Alexander Chaika
-     * @author alexander.chaika@itechart-group.com
-     * @link http://www.itechart.com
+     * @author Alexander Chaika a.k.a. Manti
+     * @author marco.manti@gmail.com
+     * @link http://www.niiar.com
      * @date 28.05.12 16:50
      * @version 1.0
      * @abstract

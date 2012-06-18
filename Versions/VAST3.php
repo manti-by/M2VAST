@@ -2,14 +2,14 @@
     /**
      * @desc: VAST v3.0 schema implementation
      * @todo Add multiple Ad support
-     * @author Alexander Chaika
-     * @author alexander.chaika@itechart-group.com
-     * @link http://www.itechart.com
+     * @author Alexander Chaika a.k.a. Manti
+     * @author marco.manti@gmail.com
+     * @link http://www.niiar.com
      * @date 28.05.12 12:32
      * @version 1.0
      */
 
-    class VAST3 extends VAST {
+    class VAST3 extends AbstractVAST {
 
         /**
          * @desc Create InLine XML
