@@ -2,9 +2,9 @@
     /**
      * @desc: VAST fabric class for protocols versions 2.0 and 3.0
      * @todo Add support for version 2.0
-     * @author Alexander Chaika
-     * @author alexander.chaika@itechart-group.com
-     * @link http://www.itechart.com
+     * @author Alexander Chaika a.k.a. Manti
+     * @author marco.manti@gmail.com
+     * @link http://www.niiar.com
      * @date 28.05.12 12:02
      * @version 1.0
      */

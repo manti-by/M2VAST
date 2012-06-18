@@ -1,6 +1,6 @@
 <?php
     /**
-     * @desc Bootstrap file for VAST library
+     * @desc Sandbox/test file for VAST library
      * @author Alexander Chaika a.k.a. Manti
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
