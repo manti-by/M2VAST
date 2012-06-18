@@ -6,7 +6,7 @@
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 28.05.12 12:32
-     * @version 1.0a
+     * @version 1.0
      */
 
     class VAST3 extends AbstractVAST {
@@ -23,6 +23,9 @@
             // Create inline tag
             $inline = $this->_xml->addChild('Ad')
                 ->addChild('InLine');
+
+            // Check required fields
+            $this->checkRequired();
 
             // Add default params
             $inline->addChild('AdSystem', $this->_system);
@@ -44,6 +47,11 @@
 
             $media_file->addChild('delivery', $this->_delivery);
             $media_file->addChild('type', $this->_mime_type);
+
+            // Add Error Handler
+            if (!empty($this->_error_handler)) {
+                $inline->addChild('Error', $this->_error_handler);
+            }
 
             return $this;
         }

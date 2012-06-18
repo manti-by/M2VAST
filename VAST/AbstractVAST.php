@@ -6,7 +6,7 @@
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
      * @date 28.05.12 16:50
-     * @version 1.0a
+     * @version 1.0
      * @abstract
      */
 
@@ -73,6 +73,12 @@
         protected $_mime_type;
 
         /**
+         * @desc Ad Error Tracking pixel
+         * @var string
+         */
+        protected $_error_handler;
+
+        /**
          * @desc Return XML object
          * @return SimpleXMLElement
          */
@@ -86,6 +92,15 @@
          */
         public function toString() {
             return $this->_xml->asXML();
+        }
+
+        /**
+         * @desc Render XML object to string
+         * @param string
+         * @return string
+         */
+        public function toFile($fname) {
+            return file_put_contents($fname, $this->toString());
         }
 
         /**
@@ -230,5 +245,21 @@
          */
         public function setMIMEType($mime_type) {
             $this->_mime_type = $mime_type;
+        }
+
+        /**
+         * @desc Get Ad Error Tracking pixel
+         * @return string
+         */
+        public function getErrorHandler() {
+            return $this->_error_handler;
+        }
+
+        /**
+         * @desc Set Ad MIME type
+         * @param string $mime_type
+         */
+        public function setErrorHandler($error_handler) {
+            $this->_error_handler = $error_handler;
         }
     }
