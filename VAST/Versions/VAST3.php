@@ -1,7 +1,6 @@
 <?php
     /**
      * @desc: VAST v3.0 schema implementation
-     * @todo Add support for multiple MediaFiles
      * @author Alexander Chaika a.k.a. Manti
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
@@ -45,14 +44,19 @@
             $linear = $creatives->addChild('Creative')
                 ->addChild('Linear');
 
-            // Set attributes
+            // Set media files
             $linear->addChild('Duration', gmdate('H:i:s', $this->_duration));
-            $media_file = $linear->addChild('MediaFiles')->addChild('MediaFile');
-            $media_file->addChild('width', $this->_width);
-            $media_file->addChild('height', $this->_height);
+            $media_files = $linear->addChild('MediaFiles');
+            foreach ($this->_media_files as $media_object) {
+                $media_object->checkRequired();
+                $media_file = $media_files->addChild('MediaFile', '<![CDATA[' . $media_object->getSource() . ']]>');
 
-            $media_file->addChild('delivery', $this->_delivery);
-            $media_file->addChild('type', $this->_mime_type);
+                $media_file->addAttribute('width', $media_object->getWidth());
+                $media_file->addAttribute('height', $media_object->getHeight());
+                $media_file->addAttribute('delivery', $media_object->getDelivery());
+                $media_file->addAttribute('type', $media_object->getMIMEType());
+                $media_file->addAttribute('bitrate', $media_object->getBitrate());
+            }
 
             // Add Error Handler
             if (!empty($this->_error_handler)) {
@@ -93,22 +97,6 @@
 
             if (empty($this->_impressions)) {
                 throw new VASTException('Missing required field Impressions');
-            }
-
-            if (empty($this->_width)) {
-                throw new VASTException('Missing required field Width');
-            }
-
-            if (empty($this->_height)) {
-                throw new VASTException('Missing required field Height');
-            }
-
-            if (empty($this->_delivery)) {
-                throw new VASTException('Missing required field Delivery');
-            }
-
-            if (empty($this->_mime_type)) {
-                throw new VASTException('Missing required field MIME Type');
             }
         }
     }

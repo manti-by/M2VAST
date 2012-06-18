@@ -1,7 +1,6 @@
 <?php
     /**
      * @desc Abstract VAST class with default set get methods
-     * @todo Add support for multiple MediaFiles
      * @author Alexander Chaika a.k.a. Manti
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
@@ -9,6 +8,8 @@
      * @version 1.0RC1
      * @abstract
      */
+
+    require_once 'MediaFiles.php';
 
     abstract class AbstractVAST {
 
@@ -22,31 +23,13 @@
          * @desc Ad Impressions
          * @var mixed
          */
-        protected $_impressions;
-
-        /**
-         * @desc Video Ad width
-         * @var int
-         */
-        protected $_width;
-
-        /**
-         * @desc Video Ad height
-         * @var int
-         */
-        protected $_height;
+        protected $_impressions = array();
 
         /**
          * @desc Video Ad duration in seconds
          * @var int
          */
         protected $_duration;
-
-        /**
-         * @desc Video Ad bitrate
-         * @var int
-         */
-        protected $_bitrate;
 
         /**
          * @desc Video Ad System
@@ -61,18 +44,6 @@
         protected $_title;
 
         /**
-         * @desc Video Ad Delivery method
-         * @var string
-         */
-        protected $_delivery;
-
-        /**
-         * @desc Video Ad MIME Type
-         * @var string
-         */
-        protected $_mime_type;
-
-        /**
          * @desc Ad Error Tracking pixel
          * @var string
          */
@@ -83,6 +54,12 @@
          * @var string
          */
         protected $_wrapper_link;
+
+        /**
+         * @desc Ad Media Files
+         * @var array
+         */
+        protected $_media_files = array();
 
         /**
          * @desc Return XML object
@@ -126,38 +103,6 @@
         }
 
         /**
-         * @desc Get Ad width
-         * @return int
-         */
-        public function getWidth() {
-            return $this->_width;
-        }
-
-        /**
-         * @desc Set Ad width
-         * @param int $width
-         */
-        public function setWidth($width) {
-            $this->_width = $width;
-        }
-
-        /**
-         * @desc Get Ad height
-         * @return int
-         */
-        public function getHeight() {
-            return $this->_height;
-        }
-
-        /**
-         * @desc Set Ad height
-         * @param int $height
-         */
-        public function setHeight($height) {
-            $this->_height = $height;
-        }
-
-        /**
          * @desc Get Ad duration
          * @return int
          */
@@ -171,22 +116,6 @@
          */
         public function setDuration($duration) {
             $this->_duration = $duration;
-        }
-
-        /**
-         * @desc Get Ad bitrate
-         * @return int
-         */
-        public function getBitrate() {
-            return $this->_bitrate;
-        }
-
-        /**
-         * @desc Set Ad bitrate
-         * @param int $bitrate
-         */
-        public function setBitrate($bitrate) {
-            $this->_bitrate = $bitrate;
         }
 
         /**
@@ -238,38 +167,6 @@
         }
 
         /**
-         * @desc Get Ad Delivery type
-         * @return string
-         */
-        public function getDelivery() {
-            return $this->_delivery;
-        }
-
-        /**
-         * @desc Set Ad Delivery type
-         * @param string $delivery
-         */
-        public function setDelivery($delivery) {
-            $this->_delivery = $delivery;
-        }
-
-        /**
-         * @desc Get Ad MIME type
-         * @return string
-         */
-        public function getMIMEType() {
-            return $this->_mime_type;
-        }
-
-        /**
-         * @desc Set Ad MIME type
-         * @param string $mime_type
-         */
-        public function setMIMEType($mime_type) {
-            $this->_mime_type = $mime_type;
-        }
-
-        /**
          * @desc Get Ad Error Link
          * @return string
          */
@@ -283,5 +180,39 @@
          */
         public function setErrorLink($error_link) {
             $this->_error_link = $error_link;
+        }
+
+        /**
+         * @desc Get Ad Media Files
+         * @return string
+         */
+        public function getMediaFiles() {
+            return $this->_media_files;
+        }
+
+        /**
+         * @desc Set Ad Media Files
+         * @param array $media_files
+         */
+        public function setMediaFiles($media_files) {
+            $this->_media_files = $media_files;
+        }
+
+        /**
+         * @desc Set Ad Media Files from Associate Array
+         * @param array $media_files_array
+         */
+        public function setMediaFilesFromArray($media_files_array) {
+            foreach ($media_files_array as $id => $data) {
+                $media_file = new MediaFiles;
+                $media_file->setId($id);
+                $media_file->setSource($data['source']);
+                $media_file->setDelivery($data['delivery']);
+                $media_file->setMIMEType($data['mimetype']);
+                $media_file->setWidth($data['width']);
+                $media_file->setHeight($data['height']);
+                $media_file->setBitrate($data['bitrate']);
+                $this->_media_files[] = $media_file;
+            }
         }
     }
