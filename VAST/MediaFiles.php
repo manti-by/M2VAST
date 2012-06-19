@@ -11,62 +11,53 @@
     class MediaFiles {
 
         /**
-         * @desc Video Ad ID
-         * @var mixed
-         */
-        protected $_id;
-
-        /**
          * @desc Video Ad Source
          * @var string
          */
-        protected $_source;
+        private $_source;
 
         /**
          * @desc Video Ad Delivery method
          * @var string
          */
-        protected $_delivery;
+        private $_delivery;
 
         /**
          * @desc Video Ad MIME Type
          * @var string
          */
-        protected $_mime_type;
+        private $_mime_type;
 
         /**
          * @desc Video Ad width
          * @var int
          */
-        protected $_width;
+        private $_width;
 
         /**
          * @desc Video Ad height
          * @var int
          */
-        protected $_height;
+        private $_height;
 
         /**
          * @desc Video Ad bitrate
          * @var int
          */
-        protected $_bitrate;
+        private $_bitrate;
 
         /**
-         * @desc Get Ad ID
-         * @return string
+         * @desc Video Ad optional params OPTIONAL
+         * @var array
          */
-        public function getId() {
-            return $this->_id;
-        }
+        private $_optional = array();
 
         /**
-         * @desc Set Ad ID
-         * @param string $id
+         * @desc Available Video Ad optional params
+         * @var array
          */
-        public function setId($id) {
-            $this->_id = $id;
-        }
+        private $_optional_params_available =
+            array('codec', 'id', 'bitrate', 'minBitrate', 'maxBitrate', 'scalable', 'maintainAspectRatio', 'apiFramework');
 
         /**
          * @desc Get Ad Source
@@ -187,6 +178,67 @@
 
             if (empty($this->_mime_type)) {
                 throw new VASTException('Missing required field MediaFiles:MIME Type');
+            }
+        }
+
+        /**
+         * @desc Get Ad optional param
+         * @param string $name OPTIONAL
+         * @return mixed
+         * @throws VASTException
+         */
+        public function getOptional($name = null) {
+            if (!empty($name)) {
+                if (!in_array($name, self::$_optional_params_available)) {
+                    throw new VASTException('Optional param "' . $name . '" not supported by this protocol version');
+                } else {
+                    return $this->_optional[$name];
+                }
+            } else {
+                return $this->_optional;
+            }
+        }
+
+        /**
+         * @desc Set Ad optional param
+         * @param mixed $name
+         * @param string $value
+         * @throws VASTException
+         */
+        public function setOptional($name, $value = null) {
+            if (is_array($name)) {
+                $this->setOptionalParamsFromArray($name);
+            } else {
+                $this->setOptionalParam($name, $value);
+            }
+        }
+
+        /**
+         * @desc Set Ad optionals params from accociated array
+         * @param array $data
+         * @throws VASTException
+         */
+        private function setOptionalParamsFromArray($data) {
+            foreach ($data as $name => $value) {
+                $this->setOptionalParam($name, $value);
+            }
+        }
+
+        /**
+         * @desc Set Ad optional param
+         * @param string $name
+         * @param mixed $value
+         * @throws VASTException
+         */
+        private function setOptionalParam($name, $value) {
+            if (!empty($name)) {
+                if (!in_array($name, $this->_optional_params_available)) {
+                    throw new VASTException('Optional param "' . $name . '" not supported by this protocol version');
+                } else {
+                    $this->_optional[$name] = $value;
+                }
+            } else {
+                throw new VASTException('Name of optional param could not be empty');
             }
         }
     }

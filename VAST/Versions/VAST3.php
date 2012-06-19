@@ -23,7 +23,7 @@
                 ->addChild('InLine');
 
             // Check required fields
-            $this->checkRequired();
+            $this->checkInlineRequired();
 
             // Add default params
             $inline->addChild('AdSystem', $this->_system);
@@ -56,6 +56,14 @@
                 $media_file->addAttribute('delivery', $media_object->getDelivery());
                 $media_file->addAttribute('type', $media_object->getMIMEType());
                 $media_file->addAttribute('bitrate', $media_object->getBitrate());
+
+                // Add optional params
+                $optional = $media_file->getOptional();
+                if (!empty($optional)) {
+                    foreach ($optional as $key => $value) {
+                        $media_file->addAttribute($key, $value);
+                    }
+                }
             }
 
             // Add Error Handler
@@ -71,10 +79,11 @@
          * @return object $this
          */
         public function wrap() {
-            // Create XML root paths
-            $this->_xml = new SimpleXMLElement('<VAST></VAST>');
-            $this->_xml->addAttribute('version', '3.0');
+            // Check required fields
+            $this->checkWrapRequired();
 
+            // Create XML root paths
+            $this->_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><VAST version="3.0"></VAST>');
             $this->_xml->addChild('Ad')
                 ->addChild('Wrapper')
                 ->addChild('VASTAdTagURI', '<![CDATA[' . $this->_wrapper_link . ']]>');
@@ -83,10 +92,10 @@
         }
 
         /**
-         * @desc Check required fields
+         * @desc Check required inline fields
          * @throws VASTException
          */
-        private function checkRequired() {
+        private function checkInlineRequired() {
             if (empty($this->_system)) {
                 throw new VASTException('Missing required field AdSystem');
             }
@@ -97,6 +106,16 @@
 
             if (empty($this->_impressions)) {
                 throw new VASTException('Missing required field Impressions');
+            }
+        }
+
+        /**
+         * @desc Check required wrap fields
+         * @throws VASTException
+         */
+        private function checkWrapRequired() {
+            if (empty($this->_wrapper_link)) {
+                throw new VASTException('Missing required field Wrapper Link');
             }
         }
     }

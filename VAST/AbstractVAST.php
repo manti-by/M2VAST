@@ -205,13 +205,16 @@
         public function setMediaFilesFromArray($media_files_array) {
             foreach ($media_files_array as $id => $data) {
                 $media_file = new MediaFiles;
-                $media_file->setId($id);
                 $media_file->setSource($data['source']);
                 $media_file->setDelivery($data['delivery']);
                 $media_file->setMIMEType($data['mimetype']);
                 $media_file->setWidth($data['width']);
                 $media_file->setHeight($data['height']);
                 $media_file->setBitrate($data['bitrate']);
+
+                if (!empty($data['optional'])) {
+                    $media_file->setOptional($data['optional']);
+                }
                 $this->_media_files[] = $media_file;
             }
         }
