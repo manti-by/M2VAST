@@ -1,6 +1,6 @@
 <?php
     /**
-     * @desc Sandbox/test file for VAST library
+     * @desc Bootstrap file for VAST library
      * @author Alexander Chaika a.k.a. Manti
      * @author marco.manti@gmail.com
      * @link http://www.niiar.com
@@ -17,26 +17,33 @@
         // Set params
         $vast->setSystem('VAST Data Provider');
         $vast->setTitle('Ad Title');
-        $vast->setImpressions('http://www.data-provider.com/impression');
+        $vast->setImpressions(array(
+            'http://www.data-provider.com/impression-1',
+            'http://www.data-provider.com/impression-2'
+        ));
         $vast->setDuration(300); // sec
 
         // Set Media Files
         $vast->setMediaFilesFromArray(array(
             array(
                 'source'=> 'http://www.data-provider.com/source-1',
-                'width' => 600,
-                'height' => 400,
-                'bitrate' => 500,
-                'delivery' => 'progressive',
-                'mimetype' => 'video/x-flv',
+                'attributes' => array(
+                    'width' => 600,
+                    'height' => 400,
+                    'delivery' => 'progressive',
+                    'type' => 'video/x-flv',
+                    'codec' => 'DIVX'
+                )
             ),
             array(
                 'source'=> 'http://www.data-provider.com/source-2',
-                'width' => 300,
-                'height' => 200,
-                'bitrate' => 250,
-                'delivery' => 'progressive',
-                'mimetype' => 'video/mp4',
+                'attributes' => array(
+                    'width' => 300,
+                    'height' => 200,
+                    'delivery' => 'progressive',
+                    'type' => 'video/mp4',
+                    'bitrate' => 1000,
+                )
             )
         ));
 
@@ -48,12 +55,12 @@
         switch ($_REQUEST['task']) {
             case 'wrap':
                 header ("Content-type: text/xml");
-                echo $vast->wrap()->toString();
+                echo $vast->getWrapper()->toString();
                 break;
             case 'inline':
             default:
                 header ("Content-type: text/xml");
-                echo $vast->inline()->toString();
+                echo $vast->getInline()->toString();
                 break;
         }
     } catch (VASTException $e) {
