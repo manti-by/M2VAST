@@ -14,61 +14,46 @@
          * @desc Create InLine XML
          * @return object $this
          */
-        public function inline() {
+        public function getInline() {
             // Create XML root
             $this->_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><VAST version="3.0"></VAST>');
-
-            // Create inline tag
-            $inline = $this->_xml->addChild('Ad')
-                ->addChild('InLine');
 
             // Check required fields
             $this->checkInlineRequired();
 
             // Add default params
-            $inline->addChild('AdSystem', $this->_system);
-            $inline->addChild('AdTitle', $this->_title);
+            $this->_xml->Ad->InLine->AdSystem = (string)$this->_system;
+            $this->_xml->Ad->InLine->AdTitle = (string)$this->_title;
 
             // Set impression
             if (is_array($this->_impressions)) {
                 foreach ($this->_impressions as $id => $impression) {
-                    $item = $inline->addChild('Impression', '<![CDATA[' . $impression . ']]>');
-                    $item->addAttribute('id', $id);
+                    $this->_xml->Ad->InLine
+                        ->Impression[$id] = '<![CDATA[' . (string)$impression . ']]>';
+                    $this->_xml->Ad->InLine
+                        ->Impression[$id]->addAttribute('id', (string)$id);
                 }
             } else {
-                $inline->addChild('Impression', '<![CDATA[' . $this->_impressions . ']]>');
+                $this->_xml->Ad->InLine->Impression = '<![CDATA[' . (string)$this->_impressions . ']]>';
             }
 
-            // Add creatives
-            $creatives = $inline->addChild('Creatives');
-            $linear = $creatives->addChild('Creative')
-                ->addChild('Linear');
-
             // Set media files
-            $linear->addChild('Duration', gmdate('H:i:s', $this->_duration));
-            $media_files = $linear->addChild('MediaFiles');
-            foreach ($this->_media_files as $media_object) {
-                $media_object->checkRequired();
-                $media_file = $media_files->addChild('MediaFile', '<![CDATA[' . $media_object->getSource() . ']]>');
+            $this->_xml->Ad->InLine->Creatives->Creative
+                ->Linear->Duration = (string)gmdate('H:i:s', $this->_duration);
+            foreach ($this->getMediaFiles() as $id => $object) {
+                $this->_xml->Ad->InLine->Creatives->Creative
+                    ->Linear->MediaFiles->MediaFile[$id] = $object->getValue();
 
-                $media_file->addAttribute('width', $media_object->getWidth());
-                $media_file->addAttribute('height', $media_object->getHeight());
-                $media_file->addAttribute('delivery', $media_object->getDelivery());
-                $media_file->addAttribute('type', $media_object->getMIMEType());
-                $media_file->addAttribute('bitrate', $media_object->getBitrate());
-
-                // Add optional params
-                $optional = $media_file->getOptional();
-                if (!empty($optional)) {
-                    foreach ($optional as $key => $value) {
-                        $media_file->addAttribute($key, $value);
-                    }
+                $attributes = $object->getAttributes();
+                foreach ($attributes as $name => $value) {
+                    $this->_xml->Ad->InLine->Creatives
+                        ->Creative->Linear->MediaFiles->MediaFile[$id]->addAttribute($name, $value);
                 }
             }
 
             // Add Error Handler
             if (!empty($this->_error_handler)) {
-                $inline->addChild('Error', $this->_error_link);
+                $this->_xml->Ad->InLine->Error = (string)$this->_error_link;
             }
 
             return $this;
@@ -78,15 +63,13 @@
          * @desc Create Wrapper XML
          * @return object $this
          */
-        public function wrap() {
+        public function getWrapper() {
             // Check required fields
             $this->checkWrapRequired();
 
             // Create XML root paths
             $this->_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><VAST version="3.0"></VAST>');
-            $this->_xml->addChild('Ad')
-                ->addChild('Wrapper')
-                ->addChild('VASTAdTagURI', '<![CDATA[' . $this->_wrapper_link . ']]>');
+            $this->_xml->Ad->Wrapper->VASTAdTagURI = '<![CDATA[' . (string)$this->_wrapper_link . ']]>';
 
             return $this;
         }
