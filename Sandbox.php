@@ -53,6 +53,12 @@
             'CustomClick'=> 'http://www.data-provider.com/custom-click',
         ));
 
+        // Set Tracking Events
+        $vast->setTrackingEvents(array(
+            'creativeView'=> 'http://www.data-provider.com/creative-view',
+            'collapse'=> 'http://www.data-provider.com/collapse',
+        ));
+
         // Set error tracking link
         $vast->setErrorLink('http://www.data-provider.com/error');
         $vast->setWrapperLink('http://www.data-provider.com/wrapper');

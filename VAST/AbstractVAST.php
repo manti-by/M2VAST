@@ -66,6 +66,12 @@
         protected $_video_clicks = array();
 
         /**
+         * @desc Tracking Events
+         * @var array
+         */
+        protected $_tracking_events = array();
+
+        /**
          * @desc Return XML object
          * @return SimpleXMLElement
          */
@@ -222,5 +228,21 @@
          */
         public function setVideoClicks($video_clicks) {
             $this->_video_clicks = $video_clicks;
+        }
+
+        /**
+         * @desc Get Ad Tracking Events
+         * @return array
+         */
+        public function getTrackingEvents() {
+            return $this->_tracking_events;
+        }
+
+        /**
+         * @desc Set Ad Tracking Events
+         * @param array $tracking_events
+         */
+        public function setTrackingEvents($tracking_events) {
+            $this->_tracking_events = $tracking_events;
         }
     }

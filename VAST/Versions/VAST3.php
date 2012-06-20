@@ -104,6 +104,14 @@
                 }
             }
 
+            // Add Tracking Events
+            if (!empty($this->_tracking_events)) {
+                foreach ($this->_tracking_events as $name => $value) {
+                     $this->_xml->Ad->InLine->Creatives->Creative
+                         ->Linear->TrackingEvents->$name = $value;
+                }
+            }
+
             return $this;
         }
 
@@ -166,6 +174,16 @@
                     }
                 }
             }
+
+            // Check Video Clicks format
+            if (!empty($this->_video_clicks) && !is_array($this->_video_clicks)) {
+                throw new VASTException('Video Clicks must be an array');
+            }
+
+            // Check Tracking Events format
+            if (!empty($this->_tracking_events) && !is_array($this->_tracking_events)) {
+                throw new VASTException('Tracking Events must be an array');
+            }
         }
 
         /**
@@ -184,10 +202,18 @@
             }
 
             // Check Video clicks
-            if (!empty($this->_video_clicks) && is_array($this->_video_clicks)) {
+            if (!empty($this->_video_clicks)) {
                 $video_clicks = array_keys($this->_video_clicks);
                 if ($not_supported = array_diff($video_clicks, $this->_available_video_clicks)) {
                     throw new VASTException('Video Clicks "'.implode(', ', $not_supported).'" not supported by this protocol version');
+                }
+            }
+
+            // Check Tracking Events
+            if (!empty($this->_tracking_events)) {
+                $tracking_events = array_keys($this->_tracking_events);
+                if ($not_supported = array_diff($tracking_events, $this->_available_tracking_events)) {
+                    throw new VASTException('Tracking Events "'.implode(', ', $not_supported).'" not supported by this protocol version');
                 }
             }
         }
