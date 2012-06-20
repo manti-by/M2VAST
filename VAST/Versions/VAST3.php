@@ -49,8 +49,7 @@
             $this->_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><VAST version="3.0"></VAST>');
 
             // Check required fields
-            $this->checkInlineRequired();
-            $this->checkInlineAvailable();
+            $this->validateInline();
 
             // Add default params
             $this->_xml->Ad->InLine->AdSystem = (string)$this->_system;
@@ -112,6 +111,21 @@
                 }
             }
 
+            // Add Ad Parameters
+            if (!empty($this->_ad_parameters)) {
+                $xml_encoded = 'false';
+                if (isset($this->_ad_parameters['xmlEncoded'])) {
+                    $ad_parameters = htmlentities($this->_ad_parameters['value']);
+                    $xml_encoded = 'true';
+                }
+
+                $this->_xml->Ad->InLine->Creatives->Creative
+                    ->Linear->AdParameters = '<![CDATA[' . $ad_parameters . ']]>';
+
+                $this->_xml->Ad->InLine->Creatives->Creative
+                    ->Linear->AdParameters->addAttribute('xmlEncoded', $xml_encoded);
+            }
+
             return $this;
         }
 
@@ -121,7 +135,7 @@
          */
         public function getWrapper() {
             // Check required fields
-            $this->checkWrapRequired();
+            $this->validateWrapper();
 
             // Create XML root paths
             $this->_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><VAST version="3.0"></VAST>');
@@ -134,7 +148,8 @@
          * @desc Check required inline fields
          * @throws VASTException
          */
-        private function checkInlineRequired() {
+        private function validateInline() {
+            //// REQUIRED ELEMENTS ////
             // Check basic fields
             if (empty($this->_system)) {
                 throw new VASTException('Missing required field AdSystem');
@@ -184,13 +199,9 @@
             if (!empty($this->_tracking_events) && !is_array($this->_tracking_events)) {
                 throw new VASTException('Tracking Events must be an array');
             }
-        }
 
-        /**
-         * @desc Check available inline fields attributes
-         * @throws VASTException
-         */
-        private function checkInlineAvailable() {
+            //// AVAILABLE ELEMENTS ////
+
             // Check MediaFiles array
             foreach ($this->_media_files as $media_file) {
                 if (empty($media_file['attributes'])) {
@@ -216,13 +227,31 @@
                     throw new VASTException('Tracking Events "'.implode(', ', $not_supported).'" not supported by this protocol version');
                 }
             }
+
+            //// DEPENDENCIES ELEMENTS ////
+            $check_ad_params = true;
+            foreach ($this->_media_files as $media_file) {
+                if ($media_file['attributes']['type'] == 'application/x-shockwaveflash' &&
+                    $media_file['attributes']['apiFramework'] != 'VPAID') {
+                        throw new VASTException('You must set "apiFramework" attribute for all flash ads');
+                }
+
+                if ($media_file['attributes']['type'] == 'application/x-shockwaveflash' &&
+                    $media_file['attributes']['apiFramework'] == 'VPAID') {
+                        $check_ad_params = false;
+                }
+            }
+
+            if ($check_ad_params && !empty($this->_ad_parameters)) {
+                throw new VASTException('AdParameters not supported for all types of ads you set');
+            }
         }
 
         /**
          * @desc Check required wrap fields
          * @throws VASTException
          */
-        private function checkWrapRequired() {
+        private function validateWrapper() {
             if (empty($this->_wrapper_link)) {
                 throw new VASTException('Missing required field Wrapper Link');
             }

@@ -72,6 +72,12 @@
         protected $_tracking_events = array();
 
         /**
+         * @desc Ad Parameters
+         * @var array
+         */
+        protected $_ad_parameters = array();
+
+        /**
          * @desc Return XML object
          * @return SimpleXMLElement
          */
@@ -244,5 +250,23 @@
          */
         public function setTrackingEvents($tracking_events) {
             $this->_tracking_events = $tracking_events;
+        }
+
+        /**
+         * @desc Get Ad Parameters
+         * @return string
+         */
+        public function getAdParameters() {
+            return $this->_ad_parameters['value'];
+        }
+
+        /**
+         * @desc Set Ad Parameters
+         * @param string $ad_parameters
+         * @param bool $xml_encoded OPTIONAL default false
+         */
+        public function setAdParameters($ad_parameters, $xml_encoded = false) {
+            $this->_ad_parameters['value'] = $ad_parameters;
+            $this->_ad_parameters['xmlEncoded'] = $xml_encoded;
         }
     }

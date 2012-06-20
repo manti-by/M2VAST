@@ -41,8 +41,8 @@
                     'width' => 300,
                     'height' => 200,
                     'delivery' => 'progressive',
-                    'type' => 'video/mp4',
-                    'bitrate' => 1000,
+                    'type' => 'application/x-shockwaveflash',
+                    'apiFramework' => 'VPAID',
                 )
             )
         ));
@@ -58,6 +58,9 @@
             'creativeView'=> 'http://www.data-provider.com/creative-view',
             'collapse'=> 'http://www.data-provider.com/collapse',
         ));
+
+        // Set Ad Parameters
+        $vast->setAdParameters('param-1=17&param-2:22', true);
 
         // Set error tracking link
         $vast->setErrorLink('http://www.data-provider.com/error');
