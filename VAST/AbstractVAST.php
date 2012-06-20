@@ -9,8 +9,6 @@
      * @abstract
      */
 
-    require_once 'MediaFiles.php';
-
     abstract class AbstractVAST {
 
         /**
@@ -79,7 +77,7 @@
             if ($as_formatted_xml) {
                 return $this->_xml_string;
             } else {
-                return str_replace('<?xml version="1.0"?>' . PHP_EOL, '', $this->_xml_string);
+                return str_replace('<?xml version="1.0"?>', '', $this->_xml_string);
             }
         }
 
@@ -202,21 +200,5 @@
          */
         public function setMediaFiles($media_files) {
             $this->_media_files = $media_files;
-        }
-
-        /**
-         * @desc Set Ad Media Files from Associate Array
-         * @param array $media_files_array
-         */
-        public function setMediaFilesFromArray($media_files_array) {
-            foreach ($media_files_array as $id => $data) {
-                $media_file = new MediaFile;
-
-                $media_file->setValue($data['source']);
-                $media_file->setAttributes($data['attributes']);
-
-                $media_file->checkRequired();
-                $this->_media_files[] = $media_file;
-            }
         }
     }

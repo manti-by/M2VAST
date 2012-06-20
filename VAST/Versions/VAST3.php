@@ -10,6 +10,12 @@
 
     class VAST3 extends AbstractVAST {
 
+        private $_available_media_file_attributes = array(
+            'delivery', 'type', 'width', 'height',
+            'codec', 'id', 'bitrate', 'minBitrate', 'maxBitrate',
+            'scalable', 'maintainAspectRatio', 'apiFramework'
+        );
+
         /**
          * @desc Create InLine XML
          * @return object $this
@@ -20,6 +26,7 @@
 
             // Check required fields
             $this->checkInlineRequired();
+            $this->checkInlineAvailable();
 
             // Add default params
             $this->_xml->Ad->InLine->AdSystem = (string)$this->_system;
@@ -40,12 +47,11 @@
             // Set media files
             $this->_xml->Ad->InLine->Creatives->Creative
                 ->Linear->Duration = (string)gmdate('H:i:s', $this->_duration);
-            foreach ($this->getMediaFiles() as $id => $object) {
+            foreach ($this->getMediaFiles() as $id => $media_file) {
                 $this->_xml->Ad->InLine->Creatives->Creative
-                    ->Linear->MediaFiles->MediaFile[$id] = $object->getValue();
+                    ->Linear->MediaFiles->MediaFile[$id] = $media_file['value'];
 
-                $attributes = $object->getAttributes();
-                foreach ($attributes as $name => $value) {
+                foreach ($media_file['attributes'] as $name => $value) {
                     $this->_xml->Ad->InLine->Creatives
                         ->Creative->Linear->MediaFiles->MediaFile[$id]->addAttribute($name, $value);
                 }
@@ -79,6 +85,7 @@
          * @throws VASTException
          */
         private function checkInlineRequired() {
+            // Check basic fields
             if (empty($this->_system)) {
                 throw new VASTException('Missing required field AdSystem');
             }
@@ -89,6 +96,45 @@
 
             if (empty($this->_impressions)) {
                 throw new VASTException('Missing required field Impressions');
+            }
+
+            // Check MediaFiles array
+            foreach ($this->_media_files as $media_file) {
+                if (empty($media_file['value'])) {
+                    throw new VASTException('Missing required field MediaFiles:Value');
+                }
+
+                if (empty($media_file['attributes']['width'])) {
+                    throw new VASTException('Missing required attribute MediaFiles:Width');
+                }
+
+                if (empty($media_file['attributes']['height'])) {
+                    throw new VASTException('Missing required attribute MediaFiles:Height');
+                }
+
+                if (empty($media_file['attributes']['delivery'])) {
+                    throw new VASTException('Missing required attribute MediaFiles:Delivery');
+                }
+
+                if (empty($media_file['attributes']['type'])) {
+                    throw new VASTException('Missing required attribute MediaFiles:MIME Type');
+                }
+            }
+        }
+
+        /**
+         * @desc Check available inline fields attributes
+         * @throws VASTException
+         */
+        private function checkInlineAvailable() {
+            // Check MediaFiles array
+            foreach ($this->_media_files as $media_file) {
+                if (empty($media_file['attributes'])) {
+                    $attributes = array_keys($media_file['attributes']);
+                    if ($not_supported = array_diff($attributes, $media_file['attributes'])) {
+                        throw new VASTException('MediaFiles attributes "'.implode(', ', $not_supported).'" by this protocol version');
+                    }
+                }
             }
         }
 
