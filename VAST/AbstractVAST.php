@@ -71,10 +71,16 @@
 
         /**
          * @desc Render XML object to string
+         * @param bool $as_formatted_xml
          * @return string
          */
-        public function toString() {
-            return $this->_xml->asXML();
+        public function toString($as_formatted_xml = true) {
+            $this->_xml_string = $this->getXML()->asXML();
+            if ($as_formatted_xml) {
+                return $this->_xml_string;
+            } else {
+                return str_replace('<?xml version="1.0"?>' . PHP_EOL, '', $this->_xml_string);
+            }
         }
 
         /**
@@ -204,17 +210,12 @@
          */
         public function setMediaFilesFromArray($media_files_array) {
             foreach ($media_files_array as $id => $data) {
-                $media_file = new MediaFiles;
-                $media_file->setSource($data['source']);
-                $media_file->setDelivery($data['delivery']);
-                $media_file->setMIMEType($data['mimetype']);
-                $media_file->setWidth($data['width']);
-                $media_file->setHeight($data['height']);
-                $media_file->setBitrate($data['bitrate']);
+                $media_file = new MediaFile;
 
-                if (!empty($data['optional'])) {
-                    $media_file->setOptional($data['optional']);
-                }
+                $media_file->setValue($data['source']);
+                $media_file->setAttributes($data['attributes']);
+
+                $media_file->checkRequired();
                 $this->_media_files[] = $media_file;
             }
         }
