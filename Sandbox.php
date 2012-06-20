@@ -24,9 +24,9 @@
         $vast->setDuration(300); // sec
 
         // Set Media Files
-        $vast->setMediaFilesFromArray(array(
+        $vast->setMediaFiles(array(
             array(
-                'source'=> 'http://www.data-provider.com/source-1',
+                'value'=> 'http://www.data-provider.com/source-1',
                 'attributes' => array(
                     'width' => 600,
                     'height' => 400,
@@ -36,7 +36,7 @@
                 )
             ),
             array(
-                'source'=> 'http://www.data-provider.com/source-2',
+                'value'=> 'http://www.data-provider.com/source-2',
                 'attributes' => array(
                     'width' => 300,
                     'height' => 200,
@@ -45,6 +45,12 @@
                     'bitrate' => 1000,
                 )
             )
+        ));
+
+        // Set Video Clicks
+        $vast->setVideoClicks(array(
+            'ClickThrough'=> 'http://www.data-provider.com/click-through',
+            'CustomClick'=> 'http://www.data-provider.com/custom-click',
         ));
 
         // Set error tracking link

@@ -60,6 +60,12 @@
         protected $_media_files = array();
 
         /**
+         * @desc Video Clicks
+         * @var array
+         */
+        protected $_video_clicks = array();
+
+        /**
          * @desc Return XML object
          * @return SimpleXMLElement
          */
@@ -200,5 +206,21 @@
          */
         public function setMediaFiles($media_files) {
             $this->_media_files = $media_files;
+        }
+
+        /**
+         * @desc Get Ad Video Clicks
+         * @return array
+         */
+        public function getVideoClicks() {
+            return $this->_video_clicks;
+        }
+
+        /**
+         * @desc Set Ad Video Clicks
+         * @param array $video_clicks
+         */
+        public function setVideoClicks($video_clicks) {
+            $this->_video_clicks = $video_clicks;
         }
     }

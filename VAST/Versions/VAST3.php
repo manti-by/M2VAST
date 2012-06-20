@@ -10,10 +10,34 @@
 
     class VAST3 extends AbstractVAST {
 
+        /**
+         * @desc Available Media File attributes
+         * @var array
+         */
         private $_available_media_file_attributes = array(
             'delivery', 'type', 'width', 'height',
             'codec', 'id', 'bitrate', 'minBitrate', 'maxBitrate',
             'scalable', 'maintainAspectRatio', 'apiFramework'
+        );
+
+        /**
+         * @desc Available Video Clicks
+         * @var array
+         */
+        private $_available_video_clicks = array(
+            'ClickThrough', 'ClickTracking', 'CustomClick'
+        );
+
+        /**
+         * @desc Available Tracking Events
+         * @var array
+         */
+        private $_available_tracking_events = array(
+            'creativeView', 'start', 'firstQuartile', 'midpoint',
+            'thirdQuartile', 'complete', 'mute', 'unmute', 'pause',
+            'rewind', 'resume', 'fullscreen',  'exitFullscreen',
+            'expand', 'collapse', 'acceptInvitation', 'close',
+            'skip', 'progress'
         );
 
         /**
@@ -62,6 +86,24 @@
                 $this->_xml->Ad->InLine->Error = (string)$this->_error_link;
             }
 
+            // Add Video Clicks
+            if (!empty($this->_video_clicks)) {
+                if (!empty($this->_video_clicks['ClickThrough'])) {
+                    $this->_xml->Ad->InLine->Creatives->Creative
+                        ->Linear->VideoClicks->ClickThrough = $this->_video_clicks['ClickThrough'];
+                }
+
+                if (!empty($this->_video_clicks['ClickTracking'])) {
+                    $this->_xml->Ad->InLine->Creatives->Creative
+                        ->Linear->VideoClicks->ClickTracking = $this->_video_clicks['ClickTracking'];
+                }
+
+                if (!empty($this->_video_clicks['CustomClick'])) {
+                    $this->_xml->Ad->InLine->Creatives->Creative
+                        ->Linear->VideoClicks->CustomClick = $this->_video_clicks['CustomClick'];
+                }
+            }
+
             return $this;
         }
 
@@ -99,25 +141,29 @@
             }
 
             // Check MediaFiles array
-            foreach ($this->_media_files as $media_file) {
-                if (empty($media_file['value'])) {
-                    throw new VASTException('Missing required field MediaFiles:Value');
-                }
+            if (empty($this->_media_files) || count($this->_media_files) == 0) {
+                throw new VASTException('At least one MediaFile need to be set');
+            } else {
+                foreach ($this->_media_files as $media_file) {
+                    if (empty($media_file['value'])) {
+                        throw new VASTException('Missing required field MediaFiles:Value');
+                    }
 
-                if (empty($media_file['attributes']['width'])) {
-                    throw new VASTException('Missing required attribute MediaFiles:Width');
-                }
+                    if (empty($media_file['attributes']['width'])) {
+                        throw new VASTException('Missing required attribute MediaFiles:Width');
+                    }
 
-                if (empty($media_file['attributes']['height'])) {
-                    throw new VASTException('Missing required attribute MediaFiles:Height');
-                }
+                    if (empty($media_file['attributes']['height'])) {
+                        throw new VASTException('Missing required attribute MediaFiles:Height');
+                    }
 
-                if (empty($media_file['attributes']['delivery'])) {
-                    throw new VASTException('Missing required attribute MediaFiles:Delivery');
-                }
+                    if (empty($media_file['attributes']['delivery'])) {
+                        throw new VASTException('Missing required attribute MediaFiles:Delivery');
+                    }
 
-                if (empty($media_file['attributes']['type'])) {
-                    throw new VASTException('Missing required attribute MediaFiles:MIME Type');
+                    if (empty($media_file['attributes']['type'])) {
+                        throw new VASTException('Missing required attribute MediaFiles:MIME Type');
+                    }
                 }
             }
         }
@@ -132,8 +178,16 @@
                 if (empty($media_file['attributes'])) {
                     $attributes = array_keys($media_file['attributes']);
                     if ($not_supported = array_diff($attributes, $media_file['attributes'])) {
-                        throw new VASTException('MediaFiles attributes "'.implode(', ', $not_supported).'" by this protocol version');
+                        throw new VASTException('MediaFiles attributes "'.implode(', ', $not_supported).'" not supported by this protocol version');
                     }
+                }
+            }
+
+            // Check Video clicks
+            if (!empty($this->_video_clicks) && is_array($this->_video_clicks)) {
+                $video_clicks = array_keys($this->_video_clicks);
+                if ($not_supported = array_diff($video_clicks, $this->_available_video_clicks)) {
+                    throw new VASTException('Video Clicks "'.implode(', ', $not_supported).'" not supported by this protocol version');
                 }
             }
         }
